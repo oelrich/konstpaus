@@ -2,16 +2,67 @@
   const template = document.createElement("template");
   template.innerHTML = `
 <style>
-img {
-  width: 350px;
-  height: auto;
+.art {
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  width:  350px;
+  height: 350px;
+}
+.work {
+  object-fit: cover;
+  maxheight: 100%;
+  width: 100%;
+}
+.info {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.title {
+  background-color: rgba(224,224,224,0.85);
+
+  border-radius: 8px;
+  padding: 4px;
+  text-align: center;
+
+  position: absolute;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 95%;
+}
+.abstract {
+  background-color: rgba(224,224,224,0.75);
+
+  border-radius: 8px;
+  padding: 4px;
+  text-align: center;
+
+  position: absolute;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 90%;
+}
+.day {
+  background-color: rgba(224,224,224,0.75);
+  
+  border-radius: 8px;
+  padding: 4px;
+  text-align: center;
+
+  position: absolute;
+  width: 30%;
+  right: 5%;
+  top: 5%;
 }
 </style>
 <div class="art">
-  <img class="work" />
-  <div class="desc">
+  <img hidden class="work" />
+  <div class="info">
     <div class="title"></div>
-    <div class="abstract"></div>
+    <div hidden class="abstract"></div>
     <div class="day"></div>
   </div>
 </div>
@@ -24,6 +75,7 @@ img {
     }
 
     async connectedCallback() {
+      this.shadowRoot.querySelector(".art").setAttribute("style", "background-image: url('" + this.work + "')");
       this.shadowRoot.querySelector(".work").src = this.work;
       this.shadowRoot.querySelector(".title").innerHTML = this.title;
       this.shadowRoot.querySelector(".abstract").innerHTML = this.abstract;

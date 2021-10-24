@@ -39,6 +39,14 @@
 
   const template = document.createElement("template");
   template.innerHTML = `
+  <style>
+    .gallery {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-evenly;
+      gap: 15px;
+    }
+  </style>
   <div class="gallery"></div>`;
 
   class ArtGallery extends HTMLElement {
@@ -51,6 +59,14 @@
     static get observedAttributes() {
       return ["loading"];
     }
+
+    // eslint-disable-next-line no-unused-vars
+    attributeChangedCallback(_name, _oldValue, _newValue) {
+      [...this.gallery.children]
+        .sort((a, b) => a.day < b.day)
+        .forEach(n => this.gallery.appendChild(n));
+    }
+
 
     async connectedCallback() {
       const documents = await get_art_documents();
