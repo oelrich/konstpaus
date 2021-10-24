@@ -12,6 +12,7 @@ img {
   <div class="desc">
     <div class="title"></div>
     <div class="abstract"></div>
+    <div class="day"></div>
   </div>
 </div>
 `;
@@ -26,6 +27,7 @@ img {
       this.shadowRoot.querySelector(".work").src = this.work;
       this.shadowRoot.querySelector(".title").innerHTML = this.title;
       this.shadowRoot.querySelector(".abstract").innerHTML = this.abstract;
+      this.shadowRoot.querySelector(".day").innerHTML = this.day;
     }
 
     get work() {
@@ -45,6 +47,12 @@ img {
     }
     set title(value) {
       this.setAttribute("title", JSON.stringify(value));
+    }
+    get day() {
+      return JSON.parse(this.getAttribute("day"));
+    }
+    set day(value) {
+      this.setAttribute("day", JSON.stringify(value));
     }
   }
 

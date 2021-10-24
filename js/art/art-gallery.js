@@ -4,9 +4,10 @@
     const year = date.getFullYear();
     const month = date.getMonth() + 1; // Because the author of Date() is a fucking moron.
     const day = date.getDate();
-
+    const day_date = year + "-" + ("00" + month).slice(-2) + "-" + ("00" + day).slice(-2);
+    const day_url = "/arts/" + year + "/" + ("00" + month).slice(-2) + "/" + ("00" + day).slice(-2) + "/";
     date.setTime(date.getTime() + 1000 * 60 * 60 * 24);
-    return "/arts/" + year + "/" + ("00" + month).slice(-2) + "/" + ("00" + day).slice(-2) + "/";
+    return { day: day_date, url: day_url };
   };
 
   const get_art_urls = function () {
@@ -21,12 +22,18 @@
 
   const get_art_documents = async function () {
     const art_json_list = [];
-    const urls = get_art_urls();
-    urls.forEach(async url =>
-      await fetch(url + "art.json")
-        .then(result => result.json())
-        .then(json => { json.work = url + "art_00.jpg"; art_json_list.push(json); })
-        .catch(err => console.log(err)));
+    const when_and_where = get_art_urls();
+    await Promise.all(
+      when_and_where.map(async ww => {
+        await fetch(ww.url + "art.json")
+          .then(result => result.json())
+          .then(json => {
+            json.day = ww.day;
+            json.work = ww.url + "art_00.jpg";
+            art_json_list.push(json);
+          })
+          .catch(err => console.log(err));
+      }));
     return art_json_list;
   };
 
@@ -51,6 +58,7 @@
       this.loading = true;
       documents.forEach(art => {
         const art_thing = document.createElement("art-thing");
+        art_thing.day = art.day;
         art_thing.title = art.title;
         art_thing.abstract = art.abstract;
         art_thing.work = art.work;
