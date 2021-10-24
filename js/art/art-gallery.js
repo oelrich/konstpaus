@@ -5,7 +5,7 @@
     const month = date.getMonth() + 1; // Because the author of Date() is a fucking moron.
     const day = date.getDate();
     const day_date = year + "-" + ("00" + month).slice(-2) + "-" + ("00" + day).slice(-2);
-    const day_url = "/arts/" + year + "/" + ("00" + month).slice(-2) + "/" + ("00" + day).slice(-2) + "/";
+    const day_url = "./arts/" + year + "/" + ("00" + month).slice(-2) + "/" + ("00" + day).slice(-2) + "/";
     date.setTime(date.getTime() + 1000 * 60 * 60 * 24);
     return { day: day_date, url: day_url };
   };
