@@ -9,10 +9,20 @@
   width:  350px;
   height: 350px;
 }
-.work {
-  object-fit: cover;
-  maxheight: 100%;
+.full-size {
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  background-color: #202020;
   width: 100%;
+  height: 100%;
+}
+.work {
+  object-fit: contain;
+  
+  width: 100%;
+  height: 100%;
 }
 .info {
   width: 100%;
@@ -25,7 +35,6 @@
   border-radius: 8px;
   padding: 4px;
   text-align: center;
-
   position: absolute;
   width: 90%;
   left: 50%;
@@ -40,10 +49,9 @@
   text-align: center;
 
   position: absolute;
-  width: 90%;
   left: 50%;
   transform: translate(-50%, -50%);
-  top: 90%;
+  top: 95%;
 }
 .day {
   background-color: rgba(224,224,224,0.75);
@@ -59,10 +67,12 @@
 }
 </style>
 <div class="art">
-  <img hidden class="work" />
+  <div class="full-size" hidden>
+    <img class="work" />
+    <div class="abstract"></div>
+  </div>
   <div class="info">
     <div class="title"></div>
-    <div hidden class="abstract"></div>
     <div class="day"></div>
   </div>
 </div>
@@ -72,8 +82,18 @@
       super();
       this.attachShadow({ mode: "open" });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
+      this.addEventListener("click", () => {
+        this.toggleView();
+      });
     }
+    toggleView() {
+      if (this.shadowRoot.querySelector(".full-size").hasAttribute("hidden")) {
+        this.shadowRoot.querySelector(".full-size").removeAttribute("hidden");
+      } else {
+        this.shadowRoot.querySelector(".full-size").setAttribute("hidden", "hidden");
+      }
 
+    }
     async connectedCallback() {
       this.shadowRoot.querySelector(".art").setAttribute("style", "background-image: url('" + this.work + "')");
       this.shadowRoot.querySelector(".work").src = this.work;
