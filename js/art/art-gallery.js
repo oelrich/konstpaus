@@ -29,7 +29,7 @@
           .then(result => result.json())
           .then(json => {
             json.day = ww.day;
-            json.work = ww.url + "art_00.jpg";
+            json.work = ww.url + "photo.jpeg";
             art_json_list.push(json);
           })
           .catch(err => console.log(err));
