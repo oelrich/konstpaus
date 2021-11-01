@@ -6,12 +6,14 @@
     const day = date.getDate();
     const day_date = year + "-" + ("00" + month).slice(-2) + "-" + ("00" + day).slice(-2);
     const day_url = "./arts/" + year + "/" + ("00" + month).slice(-2) + "/" + ("00" + day).slice(-2) + "/";
-    date.setTime(date.getTime() + 1000 * 60 * 60 * 24);
+
+    date.setDate(date.getDate() + 1);
     return { day: day_date, url: day_url };
   };
 
   const get_art_urls = function () {
     const today = new Date();
+    today.setDate(today.getDate() + 1);
     const date = new Date(2021, 8, 21); // Because the author of Date() is a fucking moron.
     const urls = [];
     while (date.getTime() <= today.getTime()) {
