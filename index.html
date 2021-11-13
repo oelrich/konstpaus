@@ -2,25 +2,31 @@
 
 <head>
   <title>Konstpaus</title>
-  <meta charset="UTF-8">
   <meta name="description" content="Små saker gjorda under pauser från annat.">
   <meta name="keywords" content="art pause, konstpaus">
   <meta name="author" content="Johan Oelrich">
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="./js/art/art-thing.js"></script>
-  <script src="./js/art/art-gallery.js"></script>
   <style>
     body {
       background-color: #202020;
       font-family: Helvetica;
     }
   </style>
+  <base href=".">
 </head>
 
 <body>
-  <h1 style="color: #fd5afd;">Konstpauser</h1>
-  <art-gallery></art-gallery>
+  <script type="module" crossorigin="anonymous">
+    import init, { add } from './kprs/pkg/kprs.js';
+
+    async function run() {
+      await init();
+    }
+
+    run();
+  </script>
   <footer><a style="color: #aaaaaa;" href="https://oelrich.se">2021 - Johan Oelrich</a></footer>
 </body>
 

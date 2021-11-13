@@ -1,11 +1,14 @@
 {
   "cSpell.words": [
+    "bindgen",
     "Monokramatiskt",
     "Morran",
     "påängen",
     "Wagone"
   ],
   "cSpell.ignoreWords": [
+    "gloo",
+    "kprs",
     "linebreak"
   ]
 }
