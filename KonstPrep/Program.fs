@@ -1,6 +1,6 @@
 ﻿open Giraffe.ViewEngine
 
-let indexView =
+let indexView thumbs =
     html [] [
         head [] [
             meta [ _name "charset"
@@ -20,7 +20,7 @@ let indexView =
         ]
         body [] [
             h1 [] [ str "Konstpauser" ]
-
+            div [] thumbs
         ]
     ]
 
@@ -106,3 +106,15 @@ let write_art (day: ArtScan.Day) =
 let arts = ArtScan.scan "./arts"
 
 arts |> List.iter write_art
+
+let create_thumb (day: ArtScan.Day) =
+    div [] [
+        img [ _src (sprintf "./%s/thumb-%s" day.Path day.Image)
+              _title day.ArtDesc.Title ]
+        span [] [ str day.Date ]
+    ]
+
+arts
+|> List.map create_thumb
+|> indexView
+|> fun index -> System.IO.File.WriteAllText("./index.html", RenderView.AsString.xmlNode index)
