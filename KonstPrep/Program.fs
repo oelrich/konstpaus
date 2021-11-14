@@ -24,6 +24,13 @@ let indexView =
         ]
     ]
 
+let thumb_view (day: ArtScan.Day) =
+    div [] [
+        img [ _src (sprintf "%s/thumb-%s" day.Path day.Image)
+              _title day.ArtDesc.Title ]
+        div [] [ str day.ArtDesc.Title ]
+    ]
+
 let art_page (day: ArtScan.Day) =
     html [] [
         head [] [
@@ -45,20 +52,57 @@ let art_page (day: ArtScan.Day) =
                    _type "text/css" ]
         ]
         body [] [
-            h1 [] [ str day.ArtDesc.Title ]
-            span [] [ str day.Date ]
             img [ _src (sprintf "%s/%s" day.Path day.Image)
                   _title day.ArtDesc.Title ]
+            h1 [] [ str day.ArtDesc.Title ]
+            span [] [ str day.Date ]
             p [] [ str day.ArtDesc.Abstract ]
+            a [ _href "/" ] [ str "Index" ]
 
         ]
     ]
 
+type Rotate =
+    | None
+    | Rotate90
+    | Rotate180
+    | Rotate270
+
+let get_rotation (img: System.Drawing.Image) =
+    if Array.contains 0x112 img.PropertyIdList then
+        let rot = img.GetPropertyItem 0x112
+        let value = System.BitConverter.ToUInt16 rot.Value
+
+        match value with
+        | 5us
+        | 6us -> System.Drawing.RotateFlipType.Rotate90FlipNone
+        | 3us
+        | 4us -> System.Drawing.RotateFlipType.Rotate180FlipNone
+        | 7us
+        | 8us -> System.Drawing.RotateFlipType.Rotate270FlipNone
+        | _ -> System.Drawing.RotateFlipType.RotateNoneFlipNone
+    else
+        System.Drawing.RotateFlipType.RotateNoneFlipNone
+
+let shrinky path name =
+    let image =
+        System.Drawing.Image.FromFile(sprintf "./%s/%s" path name)
+
+    let width = 512.0
+
+    let height =
+        (width / float image.Width) * float image.Height
+
+    let bim =
+        new System.Drawing.Bitmap(image, new System.Drawing.Size(int width, int height))
+
+    bim.RotateFlip <| get_rotation image
+    bim.Save(System.IO.File.OpenWrite(sprintf "./%s/thumb-%s" path name), System.Drawing.Imaging.ImageFormat.Png)
+
 let write_art (day: ArtScan.Day) =
+    shrinky day.Path day.Image
     System.IO.File.WriteAllText((sprintf "./%s/index.html" day.Path), (art_page day |> RenderView.AsString.xmlNode))
 
-ArtScan.scan "./arts" |> List.iter write_art
+let arts = ArtScan.scan "./arts"
 
-
-// For more information see https://aka.ms/fsharp-console-apps
-// printfn "%s" <| RenderView.AsString.xmlNode indexView
+arts |> List.iter write_art
