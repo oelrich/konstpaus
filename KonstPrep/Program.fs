@@ -1,7 +1,7 @@
 ﻿open Giraffe.ViewEngine
 
 let indexView thumbs =
-    html [] [
+    html [ _lang "en" ] [
         head [] [
             meta [ _name "charset"
                    _content "UTF-8" ]
@@ -18,9 +18,9 @@ let indexView thumbs =
                    _rel "stylesheet"
                    _type "text/css" ]
         ]
-        body [] [
+        body [ _class "bg-purple-900 text-purple-300" ] [
             h1 [] [ str "Konstpauser" ]
-            div [] thumbs
+            div [ _class "grid grid-cols-3" ] thumbs
         ]
     ]
 
@@ -32,7 +32,7 @@ let thumb_view (day: ArtScan.Day) =
     ]
 
 let art_page (day: ArtScan.Day) =
-    html [] [
+    html [ _lang "en" ] [
         head [] [
             meta [ _name "charset"
                    _content "UTF-8" ]
@@ -52,12 +52,14 @@ let art_page (day: ArtScan.Day) =
                    _type "text/css" ]
         ]
         body [] [
+            a [ _href "/" ] [
+                h1 [] [ str "Konstpauser" ]
+            ]
             img [ _src (sprintf "%s/%s" day.Path day.Image)
                   _title day.ArtDesc.Title ]
             h1 [] [ str day.ArtDesc.Title ]
             span [] [ str day.Date ]
             p [] [ str day.ArtDesc.Abstract ]
-            a [ _href "/" ] [ str "Index" ]
 
         ]
     ]
@@ -97,7 +99,8 @@ let shrinky path name =
         new System.Drawing.Bitmap(image, new System.Drawing.Size(int width, int height))
 
     bim.RotateFlip <| get_rotation image
-    bim.Save(System.IO.File.OpenWrite(sprintf "./%s/thumb-%s" path name), System.Drawing.Imaging.ImageFormat.Png)
+    //    let image_writer = new System.IO.File.OpenWrite(sprintf "./%s/thumb-%s" path name)
+    bim.Save((sprintf "./%s/thumb-%s" path name), System.Drawing.Imaging.ImageFormat.Jpeg)
 
 let write_art (day: ArtScan.Day) =
     shrinky day.Path day.Image
@@ -108,11 +111,13 @@ let arts = ArtScan.scan "./arts"
 arts |> List.iter write_art
 
 let create_thumb (day: ArtScan.Day) =
-    a [ _href day.Path ] [
-        img [ _src (sprintf "./%s/thumb-%s" day.Path day.Image)
-              _title day.ArtDesc.Title ]
-        span [] [ str day.Date ]
-        span [] [ str day.ArtDesc.Title ]
+    div [ _class "container" ] [
+        a [ _href day.Path ] [
+            img [ _src (sprintf "./%s/thumb-%s" day.Path day.Image)
+                  _title day.ArtDesc.Title ]
+            span [] [ str day.Date ]
+            span [] [ str day.ArtDesc.Title ]
+        ]
     ]
 
 arts
