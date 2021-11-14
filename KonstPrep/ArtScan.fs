@@ -30,7 +30,7 @@ let read_day year month (dir: DirectoryInfo) =
       Month = month
       Day = dir.Name
       Date = sprintf "%s-%s-%s" year month dir.Name
-      Path = sprintf "arts/%s/%s/%s" year month dir.Name
+      Path = sprintf "/arts/%s/%s/%s" year month dir.Name
       Image =
         dir.EnumerateFiles("*.jpeg")
         |> Seq.head

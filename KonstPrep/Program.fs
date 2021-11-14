@@ -55,9 +55,9 @@ let art_page (day: ArtScan.Day) =
     ]
 
 let write_art (day: ArtScan.Day) =
-    System.IO.File.WriteAllText((sprintf "../%s/index.html" day.Path), (art_page day |> RenderView.AsString.xmlNode))
+    System.IO.File.WriteAllText((sprintf "./%s/index.html" day.Path), (art_page day |> RenderView.AsString.xmlNode))
 
-ArtScan.scan "../arts" |> List.iter write_art
+ArtScan.scan "./arts" |> List.iter write_art
 
 
 // For more information see https://aka.ms/fsharp-console-apps
