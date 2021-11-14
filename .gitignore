@@ -1,1 +1,5 @@
 node_modules
+.fake
+.ionide
+bin
+obj
