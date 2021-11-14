@@ -108,10 +108,11 @@ let arts = ArtScan.scan "./arts"
 arts |> List.iter write_art
 
 let create_thumb (day: ArtScan.Day) =
-    div [] [
+    a [ _href day.Path ] [
         img [ _src (sprintf "./%s/thumb-%s" day.Path day.Image)
               _title day.ArtDesc.Title ]
         span [] [ str day.Date ]
+        span [] [ str day.ArtDesc.Title ]
     ]
 
 arts
