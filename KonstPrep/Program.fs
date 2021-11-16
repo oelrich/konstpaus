@@ -1,15 +1,15 @@
 ﻿open Giraffe.ViewEngine
 
-let indexView thumbs =
+let page page_title description page_body =
     html [ _lang "en" ] [
         head [] [
             meta [ _name "charset"
                    _content "UTF-8" ]
-            title [] [ str "Konstpauser" ]
+            title [] [ str page_title ]
             meta [ _name "author"
                    _content "Johan Oelrich" ]
             meta [ _name "description"
-                   _content "Små saker gjorda under pauser från annat." ]
+                   _content description ]
             meta [ _name "keywords"
                    _content "art pause, konstpaus, konstpauser" ]
             meta [ _name "viewport"
@@ -19,50 +19,37 @@ let indexView thumbs =
                    _type "text/css" ]
         ]
         body [ _class "bg-purple-900 text-purple-300" ] [
-            h1 [] [ str "Konstpauser" ]
-            div [ _class "grid grid-cols-3" ] thumbs
+            header [ _class "my-5 bg-purple-300 text-purple-900 pl-11 py-5" ] [
+                a [ _href "/" ] [
+                    h1 [ _class "text-5xl" ] [
+                        str "Konstpauser"
+                    ]
+                ]
+            ]
+            div [ _class "container mx-auto" ] page_body
+            footer [ _class "my-5 px-7 py-5 bg-purple-300 text-purple-900" ] [
+                div [ _class "text-xl" ] [
+                    str "2021 - Johan Oelrich"
+                ]
+            ]
         ]
     ]
 
-let thumb_view (day: ArtScan.Day) =
-    div [] [
-        img [ _src (sprintf "%s/thumb-%s" day.Path day.Image)
-              _title day.ArtDesc.Title ]
-        div [] [ str day.ArtDesc.Title ]
-    ]
+let indexView thumbs =
+    page
+        "Konstpauser"
+        "Små saker gjorda under pauser från annat."
+        [ div [ _class "container grid grid-cols-3 gap-5" ] thumbs ]
 
 let art_page (day: ArtScan.Day) =
-    html [ _lang "en" ] [
-        head [] [
-            meta [ _name "charset"
-                   _content "UTF-8" ]
-            title [] [
-                str (sprintf "Konstpaus - %s" day.ArtDesc.Title)
-            ]
-            meta [ _name "author"
-                   _content "Johan Oelrich" ]
-            meta [ _name "description"
-                   _content day.ArtDesc.Abstract ]
-            meta [ _name "keywords"
-                   _content "art pause, konstpaus, konstpauser" ]
-            meta [ _name "viewport"
-                   _content "width=device-width, initial-scale=1.0" ]
-            link [ _href "/css/tailwind.css"
-                   _rel "stylesheet"
-                   _type "text/css" ]
-        ]
-        body [] [
-            a [ _href "/" ] [
-                h1 [] [ str "Konstpauser" ]
-            ]
-            img [ _src (sprintf "%s/%s" day.Path day.Image)
-                  _title day.ArtDesc.Title ]
-            h1 [] [ str day.ArtDesc.Title ]
-            span [] [ str day.Date ]
-            p [] [ str day.ArtDesc.Abstract ]
-
-        ]
-    ]
+    page
+        (sprintf "Konstpaus - %s" day.ArtDesc.Title)
+        day.ArtDesc.Abstract
+        [ img [ _src (sprintf "%s/%s" day.Path day.Image)
+                _title day.ArtDesc.Title ]
+          h1 [] [ str day.ArtDesc.Title ]
+          span [] [ str day.Date ]
+          p [] [ str day.ArtDesc.Abstract ] ]
 
 type Rotate =
     | None
@@ -111,10 +98,14 @@ let arts = ArtScan.scan "./arts"
 arts |> List.iter write_art
 
 let create_thumb (day: ArtScan.Day) =
-    div [ _class "container" ] [
-        a [ _href day.Path ] [
-            img [ _src (sprintf "./%s/thumb-%s" day.Path day.Image)
-                  _title day.ArtDesc.Title ]
+    div [ _class "container rounded-xl bg-purple-300 overflow-hidden" ] [
+        a [ _class "p-3 container mx-auto"
+            _href day.Path ] [
+            div [ _class "container mx-auto" ] [
+                img [ _class "container mx-auto"
+                      _src (sprintf "./%s/thumb-%s" day.Path day.Image)
+                      _title day.ArtDesc.Title ]
+            ]
             span [] [ str day.Date ]
             span [] [ str day.ArtDesc.Title ]
         ]
@@ -122,5 +113,6 @@ let create_thumb (day: ArtScan.Day) =
 
 arts
 |> List.map create_thumb
+|> List.rev
 |> indexView
 |> fun index -> System.IO.File.WriteAllText("./index.html", RenderView.AsString.xmlNode index)
