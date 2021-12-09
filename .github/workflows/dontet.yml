@@ -1,0 +1,22 @@
+name: Dontet
+
+on:
+  push:
+    branches: [trunk]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+      - run: dotnet run --project KonstPrep .
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Added some art!"
+          commit_user_name: Johan Oelrich
+          commit_user_email: johan@oelrich.se
+          commit_author: Johan Oelrich <johan@oelrich.se>
